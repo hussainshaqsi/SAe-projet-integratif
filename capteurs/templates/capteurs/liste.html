@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>SAE2.04 - Mesures</title>
+    {% if refresh %}<meta http-equiv="refresh" content="{{ refresh }}">{% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; color:#1b2a3a; }
+        .barre { background:#eef2f7; padding:14px; border-radius:8px; margin-bottom:18px; }
+        .barre input, .barre button { padding:6px 10px; margin-right:6px; }
+        .moyenne { font-size:18px; font-weight:bold; color:#0b6; margin:12px 0; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border:1px solid #d4dae2; padding:6px 10px; text-align:left; }
+        th { background:#1b2a3a; color:#fff; }
+        tr:nth-child(even){ background:#f6f8fa; }
+        a { color:#1763c4; }
+        canvas { max-height: 260px; margin-bottom: 24px; }
+    </style>
+</head>
+<body>
+    <h1>Mesures de température</h1>
+
+    <form class="barre" method="get">
+        <input type="text" name="capteur" value="{{ f_capteur }}" placeholder="ID ou nom du capteur">
+        Du <input type="date" name="date_debut" value="{{ f_debut }}">
+        au <input type="date" name="date_fin" value="{{ f_fin }}">
+        Refresh(s) <input type="number" name="refresh" value="{{ refresh }}" style="width:60px">
+        <button type="submit">Filtrer</button>
+        <a href="{% url 'liste' %}">Reset</a>
+    </form>
+
+    {% if moyenne %}<div class="moyenne">Température moyenne : {{ moyenne|floatformat:2 }} °C</div>{% endif %}
+
+    <p><a href="{% url 'export_csv' %}?{{ request.GET.urlencode }}">Exporter en CSV</a></p>
+
+    <canvas id="graphique"></canvas>
+
+    <table>
+        <tr><th>Capteur</th><th>Pièce</th><th>Date</th><th>Temp (°C)</th></tr>
+        {% for m in mesures %}
+        <tr>
+            <td><a href="{% url 'detail' m.capteur.id %}">{{ m.capteur.nom }}</a></td>
+            <td>{{ m.capteur.piece }}</td>
+            <td>{{ m.date_mesure }}</td>
+            <td>{{ m.temperature }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Aucune mesure pour ces filtres.</td></tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        const labels = {{ labels_json|safe }};
+        const temps  = {{ temps_json|safe }};
+        new Chart(document.getElementById("graphique"), {
+            type: "line",
+            data: { labels: labels, datasets: [{ label: "Température (°C)", data: temps, borderColor: "#1763c4", tension: 0.2 }] },
+            options: { responsive: true }
+        });
+    </script>
+</body>
+</html>

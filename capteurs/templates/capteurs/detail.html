@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Capteur {{ capteur.nom }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; color:#1b2a3a; }
+        .carte { background:#eef2f7; padding:16px; border-radius:8px; max-width:480px; }
+        label { display:block; margin:8px 0 2px; font-weight:bold; }
+        input { padding:6px; width:100%; box-sizing:border-box; }
+        button { padding:8px 14px; margin-top:12px; cursor:pointer; }
+        .danger { background:#c0392b; color:#fff; border:none; }
+        table { border-collapse:collapse; width:100%; margin-top:20px; }
+        th,td { border:1px solid #d4dae2; padding:6px 10px; }
+        th { background:#1b2a3a; color:#fff; }
+    </style>
+</head>
+<body>
+    <p><a href="{% url 'liste' %}">← Retour</a></p>
+    <h1>Capteur : {{ capteur.nom }}</h1>
+
+    <div class="carte">
+        <form method="post">
+            {% csrf_token %}
+            <label>ID (non modifiable)</label>
+            <input type="text" value="{{ capteur.id }}" disabled>
+            <label>Pièce (non modifiable, vient du MQTT)</label>
+            <input type="text" value="{{ capteur.piece }}" disabled>
+            <label>Nom</label>
+            <input type="text" name="nom" value="{{ capteur.nom }}">
+            <label>Emplacement</label>
+            <input type="text" name="emplacement" value="{{ capteur.emplacement }}">
+            <button type="submit" name="action" value="modifier">Enregistrer</button>
+        </form>
+
+        <form method="post" onsubmit="return confirm('Supprimer ce capteur et toutes ses mesures ?');">
+            {% csrf_token %}
+            <button class="danger" type="submit" name="action" value="supprimer">Supprimer le capteur</button>
+        </form>
+    </div>
+
+    {% if moyenne %}<p><b>Moyenne :</b> {{ moyenne|floatformat:2 }} °C</p>{% endif %}
+
+    <table>
+        <tr><th>Date</th><th>Température (°C)</th></tr>
+        {% for m in mesures %}<tr><td>{{ m.date_mesure }}</td><td>{{ m.temperature }}</td></tr>{% endfor %}
+    </table>
+</body>
+</html>
