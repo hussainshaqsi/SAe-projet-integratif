@@ -16,13 +16,13 @@ def appliquer_filtres(request):
 
     date_debut = request.GET.get("date_debut", "").strip()
     if date_debut:
-        mesures = mesures.filter(date_mesure__date__gte=date_debut)
+        mesures = mesures.filter(timestamp__date__gte=date_debut)
 
     date_fin = request.GET.get("date_fin", "").strip()
     if date_fin:
-        mesures = mesures.filter(date_mesure__date__lte=date_fin)
+        mesures = mesures.filter(timestamp__date__lte=date_fin)
 
-    return mesures.order_by("-date_mesure")
+    return mesures.order_by("timestamp")
 
 
 def liste(request):
@@ -30,8 +30,8 @@ def liste(request):
     moyenne = mesures.aggregate(m=Avg("temperature"))["m"]
 
     # données pour le graphique (100 dernières, ordre chronologique)
-    points = list(mesures.order_by("date_mesure")[:100])
-    labels = [p.date_mesure.strftime("%d/%m %H:%M") for p in points]
+    points = list(mesures.order_by("timestamp")[:100])
+    labels = [p.timestamp.strftime("%d/%m %H:%M") for p in points]
     temperatures = [float(p.temperature) for p in points]
 
     contexte = {
@@ -62,7 +62,7 @@ def detail(request, capteur_id):
             capteur.delete()  # cascade -> supprime aussi les mesures
             return redirect("liste")
 
-    mesures = Mesure.objects.filter(capteur=capteur).order_by("-date_mesure")[:500]
+    mesures = Mesure.objects.filter(capteur=capteur).order_by("-timestamp")[:500]
     moyenne = Mesure.objects.filter(capteur=capteur).aggregate(m=Avg("temperature"))["m"]
     return render(request, "capteurs/detail.html",
                   {"capteur": capteur, "mesures": mesures, "moyenne": moyenne})
@@ -73,7 +73,7 @@ def export_csv(request):
     reponse = HttpResponse(content_type="text/csv")
     reponse["Content-Disposition"] = 'attachment; filename="mesures.csv"'
     writer = csv.writer(reponse)
-    writer.writerow(["capteur_id", "nom", "date_mesure", "temperature"])
+    writer.writerow(["capteur_id", "nom", "timestamp", "temperature"])
     for m in mesures:
-        writer.writerow([m.capteur.id, m.capteur.nom, m.date_mesure, m.temperature])
+        writer.writerow([m.capteur.id, m.capteur.nom, m.timestamp, m.temperature])
     return reponse

@@ -42,7 +42,7 @@
         <tr>
             <td><a href="{% url 'detail' m.capteur.id %}">{{ m.capteur.nom }}</a></td>
             <td>{{ m.capteur.piece }}</td>
-            <td>{{ m.date_mesure }}</td>
+            <td>{{ m.timestamp }}</td>
             <td>{{ m.temperature }}</td>
         </tr>
         {% empty %}

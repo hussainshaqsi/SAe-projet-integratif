@@ -43,7 +43,7 @@
 
     <table>
         <tr><th>Date</th><th>Température (°C)</th></tr>
-        {% for m in mesures %}<tr><td>{{ m.date_mesure }}</td><td>{{ m.temperature }}</td></tr>{% endfor %}
+        {% for m in mesures %}<tr><td>{{ m.timestamp }}</td><td>{{ m.temperature }}</td></tr>{% endfor %}
     </table>
 </body>
 </html>

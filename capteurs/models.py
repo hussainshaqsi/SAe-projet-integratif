@@ -17,7 +17,7 @@ class Capteur(models.Model):
 class Mesure(models.Model):
     id = models.AutoField(primary_key=True)
     capteur = models.ForeignKey(Capteur, on_delete=models.CASCADE, db_column="capteur_id")
-    date_mesure = models.DateTimeField()
+    timestamp = models.DateTimeField()
     temperature = models.DecimalField(max_digits=5, decimal_places=2)
 
     class Meta:
