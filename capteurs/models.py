@@ -1,5 +1,9 @@
 from django.db import models
 
+
+# managed = False -> Django ne CREE PAS les tables, il lit/ecrit dans
+# les tables MySQL deja creees par le script de collecte.
+
 class Capteur(models.Model):
     id = models.CharField(max_length=20, primary_key=True)
     nom = models.CharField(max_length=50, unique=True)
@@ -16,10 +20,15 @@ class Capteur(models.Model):
 
 class Mesure(models.Model):
     id = models.AutoField(primary_key=True)
-    capteur = models.ForeignKey(Capteur, on_delete=models.CASCADE, db_column="capteur_id")
+    capteur = models.ForeignKey(
+        Capteur, on_delete=models.CASCADE, db_column="capteur_id"
+    )
     timestamp = models.DateTimeField()
     temperature = models.DecimalField(max_digits=5, decimal_places=2)
 
     class Meta:
         managed = False
         db_table = "mesure"
+
+    def __str__(self):
+        return f"{self.capteur_id} - {self.temperature}C @ {self.timestamp}"

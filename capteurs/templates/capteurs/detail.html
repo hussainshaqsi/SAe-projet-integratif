@@ -1,49 +1,96 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <title>Capteur {{ capteur.nom }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 24px; color:#1b2a3a; }
-        .carte { background:#eef2f7; padding:16px; border-radius:8px; max-width:480px; }
-        label { display:block; margin:8px 0 2px; font-weight:bold; }
-        input { padding:6px; width:100%; box-sizing:border-box; }
-        button { padding:8px 14px; margin-top:12px; cursor:pointer; }
-        .danger { background:#c0392b; color:#fff; border:none; }
-        table { border-collapse:collapse; width:100%; margin-top:20px; }
-        th,td { border:1px solid #d4dae2; padding:6px 10px; }
-        th { background:#1b2a3a; color:#fff; }
-    </style>
-</head>
-<body>
-    <p><a href="{% url 'liste' %}">← Retour</a></p>
-    <h1>Capteur : {{ capteur.nom }}</h1>
+{% extends "capteurs/base.html" %}
 
-    <div class="carte">
-        <form method="post">
-            {% csrf_token %}
-            <label>ID (non modifiable)</label>
-            <input type="text" value="{{ capteur.id }}" disabled>
-            <label>Pièce (non modifiable, vient du MQTT)</label>
-            <input type="text" value="{{ capteur.piece }}" disabled>
-            <label>Nom</label>
-            <input type="text" name="nom" value="{{ capteur.nom }}">
-            <label>Emplacement</label>
-            <input type="text" name="emplacement" value="{{ capteur.emplacement }}">
-            <button type="submit" name="action" value="modifier">Enregistrer</button>
-        </form>
+{% block contenu %}
+<p><a href="{% url 'liste' %}">&larr; Retour a la liste</a></p>
+<h1>Capteur {{ capteur.nom }}</h1>
+<p class="sub">Page du capteur : modification du nom et de l'emplacement</p>
 
-        <form method="post" onsubmit="return confirm('Supprimer ce capteur et toutes ses mesures ?');">
-            {% csrf_token %}
-            <button class="danger" type="submit" name="action" value="supprimer">Supprimer le capteur</button>
-        </form>
+<!-- ====================== EDITION ====================== -->
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        <div class="filtres">
+            <div class="champ">
+                <label>ID (non modifiable)</label>
+                <input type="text" value="{{ capteur.id }}" disabled>
+            </div>
+            <div class="champ">
+                <label>Piece (non modifiable - vient du MQTT)</label>
+                <input type="text" value="{{ capteur.piece }}" disabled>
+            </div>
+            <div class="champ">
+                <label>Nom (modifiable, unique)</label>
+                <input type="text" name="nom" value="{{ capteur.nom }}" required>
+            </div>
+            <div class="champ">
+                <label>Emplacement (modifiable)</label>
+                <input type="text" name="emplacement" value="{{ capteur.emplacement }}">
+            </div>
+            <button type="submit">Enregistrer</button>
+            <button type="submit" name="supprimer" class="btn-danger"
+                    onclick="return confirm('Supprimer ce capteur ET toutes ses mesures ?')">
+                Supprimer
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- ====================== STATS ====================== -->
+<div class="stats">
+    <div class="stat">
+        <div class="num">{% if moyenne %}{{ moyenne|floatformat:2 }}{% else %}--{% endif %} C</div>
+        <div class="lbl">Temperature moyenne du capteur</div>
     </div>
+    <div class="stat">
+        <div class="num">{{ mesures|length }}</div>
+        <div class="lbl">Mesures</div>
+    </div>
+</div>
 
-    {% if moyenne %}<p><b>Moyenne :</b> {{ moyenne|floatformat:2 }} °C</p>{% endif %}
+<!-- ====================== GRAPHE ====================== -->
+<div class="card">
+    <canvas id="graphe" height="80"></canvas>
+</div>
 
+<!-- ====================== TABLEAU ====================== -->
+<div class="card">
     <table>
-        <tr><th>Date</th><th>Température (°C)</th></tr>
-        {% for m in mesures %}<tr><td>{{ m.timestamp }}</td><td>{{ m.temperature }}</td></tr>{% endfor %}
+        <thead>
+            <tr><th>Date / heure</th><th>Temperature</th></tr>
+        </thead>
+        <tbody>
+            {% for m in mesures %}
+            <tr>
+                <td>{{ m.timestamp|date:"d/m/Y H:i:s" }}</td>
+                <td>{{ m.temperature }} C</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="2" class="ro">Aucune mesure.</td></tr>
+            {% endfor %}
+        </tbody>
     </table>
-</body>
-</html>
+</div>
+
+<script>
+    new Chart(document.getElementById('graphe'), {
+        type: 'line',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Temperature (C)',
+                data: {{ valeurs|safe }},
+                borderColor: '#38bdf8',
+                backgroundColor: 'rgba(56,189,248,0.1)',
+                tension: 0.3, fill: true, pointRadius: 2,
+            }]
+        },
+        options: {
+            plugins: { legend: { labels: { color: '#e2e8f0' } } },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+            }
+        }
+    });
+</script>
+{% endblock %}

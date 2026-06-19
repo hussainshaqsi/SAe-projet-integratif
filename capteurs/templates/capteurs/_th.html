@@ -1,0 +1,13 @@
+{% spaceless %}
+<th>
+  {% if tri == col %}
+    {% if ordre == "asc" %}
+      <a href="?capteur={{ f_capteur }}&date_debut={{ f_debut }}&date_fin={{ f_fin }}&temp_min={{ f_tmin }}&temp_max={{ f_tmax }}&refresh={{ refresh }}&tri={{ col }}&ordre=desc">{{ titre }} &uarr;</a>
+    {% else %}
+      <a href="?capteur={{ f_capteur }}&date_debut={{ f_debut }}&date_fin={{ f_fin }}&temp_min={{ f_tmin }}&temp_max={{ f_tmax }}&refresh={{ refresh }}&tri={{ col }}&ordre=asc">{{ titre }} &darr;</a>
+    {% endif %}
+  {% else %}
+    <a href="?capteur={{ f_capteur }}&date_debut={{ f_debut }}&date_fin={{ f_fin }}&temp_min={{ f_tmin }}&temp_max={{ f_tmax }}&refresh={{ refresh }}&tri={{ col }}&ordre=desc">{{ titre }}</a>
+  {% endif %}
+</th>
+{% endspaceless %}
