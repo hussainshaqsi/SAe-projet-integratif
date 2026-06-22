@@ -1,0 +1,39 @@
+ :root {
+            --bg: #0f172a; --card: #1e293b; --accent: #38bdf8;
+            --text: #e2e8f0; --muted: #94a3b8; --border: #334155;
+            --danger: #ef4444; --ok: #22c55e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif;
+               background: var(--bg); color: var(--text); padding: 2rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        h1 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+        .sub { color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .card { background: var(--card); border: 1px solid var(--border);
+                border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+        .stats { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .stat { background: var(--card); border: 1px solid var(--border);
+                border-radius: 12px; padding: 1rem 1.5rem; min-width: 180px; }
+        .stat .num { font-size: 2rem; font-weight: 700; color: var(--accent); }
+        .stat .lbl { color: var(--muted); font-size: 0.8rem; }
+        form.filtres { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; }
+        .champ { display: flex; flex-direction: column; gap: 0.25rem; }
+        .champ label { font-size: 0.75rem; color: var(--muted); }
+        input, button { padding: 0.5rem 0.75rem; border-radius: 8px;
+                        border: 1px solid var(--border); background: var(--bg);
+                        color: var(--text); font-size: 0.9rem; }
+        input:disabled { opacity: 0.6; }
+        button { cursor: pointer; background: var(--accent); color: #04263a;
+                 font-weight: 600; border: none; }
+        button:hover { opacity: 0.9; }
+        .btn-sec { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+        .btn-danger { background: var(--danger); color: white; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); }
+        th { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
+        th a { color: var(--muted); }
+        th a:hover { color: var(--accent); text-decoration: none; }
+        tr:hover td { background: rgba(56,189,248,0.05); }
+        .ro { color: var(--muted); }
+        .pill { background: var(--bg); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; }
