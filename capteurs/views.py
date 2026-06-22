@@ -10,17 +10,6 @@ from .models import Capteur, Mesure
 #  FILTRES (partages entre liste, graphe, export CSV)
 # ============================================================
 def appliquer_filtres(request):
-    """
-    Filtres URL :
-      ?capteur=...        id OU nom OU piece (icontains)
-      ?date_debut=YYYY-MM-DD
-      ?date_fin=YYYY-MM-DD
-      ?temp_min=...
-      ?temp_max=...
-      ?tri=date|temperature|capteur|nom|piece
-      ?ordre=desc|asc      (defaut: desc)
-    Filtres cumulables. Aucun = tout.
-    """
     mesures = Mesure.objects.select_related("capteur").all()
 
     capteur = request.GET.get("capteur", "").strip()

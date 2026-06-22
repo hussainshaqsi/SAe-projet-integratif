@@ -1,9 +1,6 @@
 from django.db import models
 
 
-# managed = False -> Django ne CREE PAS les tables, il lit/ecrit dans
-# les tables MySQL deja creees par le script de collecte.
-
 class Capteur(models.Model):
     id = models.CharField(max_length=20, primary_key=True)
     nom = models.CharField(max_length=50, unique=True)
