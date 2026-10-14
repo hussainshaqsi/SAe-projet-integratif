@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i25dq&1gmqw_mc(ox*8jb^axlowoj7np5%c-c5z^^^#$lb728$'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-change-me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,11 +75,11 @@ WSGI_APPLICATION = 'Sae_projet_integratif.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "sae204",
-        "USER": 'sae',
-	"PASSWORD": 'toto',
-	"HOST": '10.252.14.76',
-	"PORT": '3306',
+        "NAME": os.environ.get("DB_NAME", "sae204"),
+        "USER": os.environ.get("DB_USER", "sae"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+        "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
+        "PORT": os.environ.get("DB_PORT", "3306"),
     }
 }
 
