@@ -1,30 +1,30 @@
-# SAÉ 2.04: Temperature sensor dashboard
+# SAÉ 2.04 : Tableau de bord des capteurs de température
 
-Django web app that displays the temperature readings collected from home sensors.
-Readings are pushed over MQTT, stored in MySQL by the [Collecte](https://github.com/hussainshaqsi/Collecte) service, and shown here.
+Application web Django qui affiche les relevés de température collectés par des capteurs domestiques.
+Les relevés sont envoyés en MQTT, enregistrés dans MySQL par le service [Collecte](https://github.com/hussainshaqsi/Collecte), puis affichés ici.
 
 ```
-Sensors --MQTT--> Collecte (Python) --SQL--> MySQL <--read-- Django dashboard (this repo)
+Capteurs --MQTT--> Collecte (Python) --SQL--> MySQL <--lecture-- Tableau de bord Django (ce dépôt)
 ```
 
-## Features
-- List of sensors (`Capteur`) with their room and location
-- Detail page per sensor with its measurements (`Mesure`: timestamp and temperature)
-- Models map to existing MySQL tables (`managed = False`), so Django never alters the schema
+## Fonctionnalités
+- Liste des capteurs (`Capteur`) avec leur pièce et leur emplacement
+- Page de détail par capteur avec ses mesures (`Mesure` : date et température)
+- Les modèles correspondent à des tables MySQL existantes (`managed = False`) : Django ne modifie jamais le schéma
 
-## Stack
-Python, Django, MySQL, HTML/CSS templates
+## Technologies
+Python, Django, MySQL, templates HTML/CSS
 
-## Run locally
+## Lancer en local
 
 ```bash
-python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
+python -m venv venv && source venv/bin/activate   # Windows : venv\Scripts\activate
 pip install django mysqlclient
-cp .env.example .env                               # then export the variables, or set them in your shell
+cp .env.example .env                               # puis exporter les variables, ou les définir dans le terminal
 python manage.py runserver
 ```
 
-Configuration is read from environment variables (see `.env.example`): `DJANGO_SECRET_KEY`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`.
+La configuration est lue depuis des variables d'environnement (voir `.env.example`) : `DJANGO_SECRET_KEY`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`.
 
-## Context
-University project (BUT Réseaux & Télécommunications, IUT de Colmar, semester 2).
+## Contexte
+Projet universitaire (BUT Réseaux & Télécommunications, IUT de Colmar, semestre 2).
